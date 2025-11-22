@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -17,15 +15,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
         with:
-          go-version: 'stable'
-
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+          go-version: '1.25'
+ 
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v9
         with:
-          version: latest
+          version: v2.6
 
   tidy:
     name: Go Mod Tidy
@@ -34,10 +32,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Go
+      - name: Set up Go 1.25
         uses: actions/setup-go@v5
         with:
-          go-version: 'stable'
+          go-version: '1.25.x'
+          check-latest: true
 
       - name: Check go mod tidy
         run: |
@@ -51,10 +50,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Go
+      - name: Set up Go 1.25
         uses: actions/setup-go@v5
         with:
-          go-version: 'stable'
+          go-version: '1.25.x'
+          check-latest: true
 
       - name: Run govulncheck
         run: |
@@ -69,10 +69,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Go
+      - name: Set up Go 1.25
         uses: actions/setup-go@v5
         with:
-          go-version: 'stable'
+          go-version: '1.25.x'
+          check-latest: true
 
       - name: Run tests
         run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
