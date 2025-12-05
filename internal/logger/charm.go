@@ -49,7 +49,7 @@ func NewCharmFromConfig(cfg *Config) Logger {
 
 	opts := log.Options{
 		Level:           charmLevel,
-		ReportTimestamp: true,
+		ReportTimestamp: !cfg.OmitTimestamp,
 		ReportCaller:    cfg.AddSource,
 	}
 
