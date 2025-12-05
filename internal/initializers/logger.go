@@ -14,7 +14,7 @@ var Logger logger.Logger
 // Each config creates a separate logger, and all are combined into a MultiLogger.
 func InitLogger(configs ...*logger.Config) {
 	if len(configs) == 0 {
-		Logger = logger.NewCharmFromConfig(logger.DefaultConfig())
+		InitDefaultLogger()
 		return
 	}
 
