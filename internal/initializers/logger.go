@@ -30,6 +30,7 @@ func InitLogger(configs ...*logger.Config) {
 	Logger = logger.NewMultiLogger(loggers...)
 }
 
+// InitDefaultLogger initializes basic logger
 func InitDefaultLogger() {
 	Logger = logger.NewCharmFromConfig(logger.DefaultConfig())
 }
