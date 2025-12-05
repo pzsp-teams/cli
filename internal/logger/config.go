@@ -35,7 +35,7 @@ type Config struct {
 	Output io.Writer
 	// AddSource adds source code position (file and line number) to log records.
 	AddSource bool
-	// OmitTimestamp disables timestamp in logs if false
+	// OmitTimestamp disables timestamp in logs if true
 	OmitTimestamp bool
 }
 
