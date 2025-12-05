@@ -148,3 +148,44 @@ func TestCharmLogger_WithChaining(t *testing.T) {
 		t.Errorf("expected request_id=req-789 in output, got: %s", output)
 	}
 }
+
+func TestCharmLogger_ShowTimestamp(t *testing.T) {
+	var bufWithTimestamp bytes.Buffer
+	cfgWithTimestamp := &Config{
+		Level:  LevelInfo,
+		Format: FormatText,
+		Output: &bufWithTimestamp,
+	}
+
+	logWithTimestamp := NewCharmFromConfig(cfgWithTimestamp)
+	logWithTimestamp.Info("message with timestamp")
+
+	outputWithTimestamp := bufWithTimestamp.String()
+
+	var bufWithoutTimestamp bytes.Buffer
+	cfgWithoutTimestamp := &Config{
+		Level:         LevelInfo,
+		Format:        FormatText,
+		Output:        &bufWithoutTimestamp,
+		OmitTimestamp: true,
+	}
+
+	logWithoutTimestamp := NewCharmFromConfig(cfgWithoutTimestamp)
+	logWithoutTimestamp.Info("message without timestamp")
+
+	outputWithoutTimestamp := bufWithoutTimestamp.String()
+
+	if !strings.Contains(outputWithTimestamp, "message with timestamp") {
+		t.Errorf("expected message in output with timestamp")
+	}
+	if !strings.Contains(outputWithoutTimestamp, "message without timestamp") {
+		t.Errorf("expected message in output without timestamp")
+	}
+
+	if !strings.HasPrefix(strings.TrimSpace(outputWithoutTimestamp), "INFO") {
+		t.Errorf("expected output without timestamp to start with INFO, got: %s", outputWithoutTimestamp)
+	}
+	if strings.HasPrefix(strings.TrimSpace(outputWithTimestamp), "INFO") {
+		t.Errorf("expected output with timestamp to NOT start with INFO (should start with timestamp), got: %s", outputWithTimestamp)
+	}
+}
