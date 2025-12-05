@@ -35,19 +35,23 @@ type Config struct {
 	Output io.Writer
 	// AddSource adds source code position (file and line number) to log records.
 	AddSource bool
+	// OmitTimestamp disables timestamp in logs if false
+	OmitTimestamp bool
 }
 
 // DefaultConfig returns a Config with default settings:
 //
-//	Level:     LevelInfo
-//	Format:    FormatText
-//	Output:    os.Stdout
-//	AddSource: false
+//	Level:         LevelInfo
+//	Format:        FormatText
+//	Output:        os.Stdout
+//	AddSource:     false
+//	OmitTimestamp: false
 func DefaultConfig() *Config {
 	return &Config{
-		Level:     LevelInfo,
-		Format:    FormatText,
-		Output:    os.Stdout,
-		AddSource: false,
+		Level:         LevelInfo,
+		Format:        FormatText,
+		Output:        os.Stdout,
+		AddSource:     false,
+		OmitTimestamp: false,
 	}
 }

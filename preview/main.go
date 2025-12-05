@@ -41,4 +41,16 @@ func charmDemo() {
 	debugLog.Info("info level message")
 	debugLog.Warn("warning level message")
 	debugLog.Error("error level message")
+
+	fmt.Println("")
+	noTimestampLog := logger.NewCharmFromConfig(&logger.Config{
+		Level:         logger.LevelInfo,
+		Format:        logger.FormatText,
+		Output:        os.Stdout,
+		OmitTimestamp: true,
+	})
+	noTimestampLog.Info("=== Logs Without Timestamps ===")
+	noTimestampLog.Info("clean log without timestamp")
+	noTimestampLog.Warn("warning without timestamp", "reason", "demonstration")
+	noTimestampLog.Error("error without timestamp", "code", "ERR001")
 }
