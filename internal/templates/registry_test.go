@@ -1,4 +1,4 @@
-package messages
+package templates
 
 import (
 	"os"

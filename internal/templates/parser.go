@@ -1,4 +1,4 @@
-package messages
+package templates
 
 import (
 	"bytes"
@@ -9,15 +9,15 @@ import (
 	"github.com/pzsp-teams/cli/internal/initializers"
 )
 
-// MessageParser handles parsing different messages from supplied template and data
-type MessageParser struct {
+// TemplateParser handles parsing different messages from supplied template and data
+type TemplateParser struct {
 	template   *template.Template
-	recipients map[string]MessageData
+	recipients map[string]TemplateData
 }
 
 // NewMessageParser returns a MessageParser with given config.
 // It parses the template and data immediately, storing the parsed objects.
-func NewMessageParser(templateReader, dataReader io.Reader, dataParser Parser) (*MessageParser, error) {
+func NewMessageParser(templateReader, dataReader io.Reader, dataParser Parser) (*TemplateParser, error) {
 	tmpl, err := readTemplate(templateReader)
 	if err != nil {
 		initializers.Logger.Error("Failed to read and parse template", "error", err)
@@ -31,7 +31,7 @@ func NewMessageParser(templateReader, dataReader io.Reader, dataParser Parser) (
 	}
 	initializers.Logger.Info("Message data parsed", "recipient_count", len(recipients))
 
-	return &MessageParser{
+	return &TemplateParser{
 		template:   tmpl,
 		recipients: recipients,
 	}, nil
@@ -39,7 +39,7 @@ func NewMessageParser(templateReader, dataReader io.Reader, dataParser Parser) (
 
 // Parse renders the template for each recipient and returns a map of rendered messages.
 // The map keys are recipient names, and values are the fully rendered messages.
-func (mp *MessageParser) Parse() (map[string]string, error) {
+func (mp *TemplateParser) Parse() (map[string]string, error) {
 	messages := make(map[string]string, len(mp.recipients))
 	for recipientName, data := range mp.recipients {
 		var buf bytes.Buffer

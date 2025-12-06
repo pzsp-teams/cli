@@ -1,4 +1,4 @@
-package messages
+package templates
 
 import (
 	"io"
@@ -11,8 +11,8 @@ import (
 type YAMLParser struct{}
 
 // Parse reads YAML-formatted message data
-func (p *YAMLParser) Parse(r io.Reader) (map[string]MessageData, error) {
-	var messages map[string]MessageData
+func (p *YAMLParser) Parse(r io.Reader) (map[string]TemplateData, error) {
+	var messages map[string]TemplateData
 	decoder := yaml.NewDecoder(r)
 	if err := decoder.Decode(&messages); err != nil {
 		initializers.Logger.Error("Failed to decode YAML data", "error", err)
