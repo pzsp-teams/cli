@@ -15,7 +15,6 @@ type Registry struct {
 
 // NewParserRegistry creates a new registry with default parsers
 func NewParserRegistry() *Registry {
-	initializers.Logger.Debug("Creating new parser registry")
 	registry := &Registry{
 		parsers: make(map[string]Parser),
 	}
@@ -32,14 +31,12 @@ func NewParserRegistry() *Registry {
 // Register adds a parser for a specific file extension
 func (r *Registry) Register(ext string, parser Parser) {
 	normalizedExt := strings.ToLower(ext)
-	initializers.Logger.Debug("Registering parser", "extension", normalizedExt)
 	r.parsers[normalizedExt] = parser
 }
 
 // GetParser returns a parser for the given file extension
 func (r *Registry) GetParser(filename string) (Parser, error) {
 	ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(filename)), ".")
-	initializers.Logger.Debug("Looking up parser for file", "filename", filename, "extension", ext)
 
 	parser, ok := r.parsers[ext]
 	if !ok {
@@ -47,7 +44,6 @@ func (r *Registry) GetParser(filename string) (Parser, error) {
 		return nil, fmt.Errorf("no parser registered for extension: .%s", ext)
 	}
 
-	initializers.Logger.Debug("Parser found", "extension", ext)
 	return parser, nil
 }
 

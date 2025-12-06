@@ -12,13 +12,11 @@ type JSONParser struct{}
 
 // Parse reads JSON-formatted message data
 func (p *JSONParser) Parse(r io.Reader) (map[string]MessageData, error) {
-	initializers.Logger.Debug("Parsing JSON data")
 	var messages map[string]MessageData
 	decoder := json.NewDecoder(r)
 	if err := decoder.Decode(&messages); err != nil {
 		initializers.Logger.Error("Failed to decode JSON data", "error", err)
 		return nil, err
 	}
-	initializers.Logger.Debug("Successfully parsed JSON data", "recipient_count", len(messages))
 	return messages, nil
 }
