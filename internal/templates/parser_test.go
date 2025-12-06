@@ -88,22 +88,8 @@ See you there!`
 	}
 
 	wantMessages := map[string]string{
-		"team1": `Hello Team Alpha!
-
-Meeting reminder:
-Date: December 1, 2025
-Time: 10:00
-Topic: Q4 Review
-
-See you there!`,
-		"team2": `Hello Team Beta!
-
-Meeting reminder:
-Date: December 1, 2025
-Time: 11:00
-Topic: Project Review
-
-See you there!`,
+		"team1": `Hello Team Alpha!<br><br>Meeting reminder:<br>Date: December 1, 2025<br>Time: 10:00<br>Topic: Q4 Review<br><br>See you there!`,
+		"team2": `Hello Team Beta!<br><br>Meeting reminder:<br>Date: December 1, 2025<br>Time: 11:00<br>Topic: Project Review<br><br>See you there!`,
 	}
 
 	if len(messages) != len(wantMessages) {
@@ -303,5 +289,204 @@ func TestMessageParser_EmptyData(t *testing.T) {
 
 	if len(messages) != 0 {
 		t.Errorf("MessageParser.Parse() got %d messages, want 0", len(messages))
+	}
+}
+
+func TestMessageParser_PlainTextWithCRLF(t *testing.T) {
+	template := "Hello {{.name}}!\r\n\r\nYour order #{{.order}} is ready.\r\nThank you!"
+	data := `{
+		"alice": {
+			"name": "Alice",
+			"order": "12345"
+		}
+	}`
+
+	tmplReader := strings.NewReader(template)
+	dataReader := strings.NewReader(data)
+
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
+	messages, err := mp.Parse()
+	if err != nil {
+		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
+	}
+
+	wantMsg := "Hello Alice!\r<br>\r<br>Your order #12345 is ready.\r<br>Thank you!"
+	gotMsg := messages["alice"]
+
+	if gotMsg != wantMsg {
+		t.Errorf("MessageParser.Parse() for CRLF:\ngot:\n%q\nwant:\n%q", gotMsg, wantMsg)
+	}
+}
+
+func TestMessageParser_HTMLContentPreserved(t *testing.T) {
+	template := "<p>Hello {{.name}}!</p>\n\n<p>Your order #{{.order}} is ready.</p>\n<p>Thank you!</p>"
+	data := `{
+		"alice": {
+			"name": "Alice",
+			"order": "12345"
+		}
+	}`
+
+	tmplReader := strings.NewReader(template)
+	dataReader := strings.NewReader(data)
+
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
+	messages, err := mp.Parse()
+	if err != nil {
+		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
+	}
+
+	wantMsg := "<p>Hello Alice!</p>\n\n<p>Your order #12345 is ready.</p>\n<p>Thank you!</p>"
+	gotMsg := messages["alice"]
+
+	if gotMsg != wantMsg {
+		t.Errorf("MessageParser.Parse() for HTML content:\ngot:\n%q\nwant:\n%q", gotMsg, wantMsg)
+	}
+}
+
+func TestMessageParser_HTMLContentWithCRLF(t *testing.T) {
+	template := "<p>Hello {{.name}}!</p>\r\n\r\n<p>Your order #{{.order}} is ready.</p>\r\n<p>Thank you!</p>"
+	data := `{
+		"bob": {
+			"name": "Bob",
+			"order": "67890"
+		}
+	}`
+
+	tmplReader := strings.NewReader(template)
+	dataReader := strings.NewReader(data)
+
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
+	messages, err := mp.Parse()
+	if err != nil {
+		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
+	}
+
+	wantMsg := "<p>Hello Bob!</p>\r\n\r\n<p>Your order #67890 is ready.</p>\r\n<p>Thank you!</p>"
+	gotMsg := messages["bob"]
+
+	if gotMsg != wantMsg {
+		t.Errorf("MessageParser.Parse() for HTML with CRLF:\ngot:\n%q\nwant:\n%q", gotMsg, wantMsg)
+	}
+}
+
+func TestMessageParser_HTMLWithBoldAndItalic(t *testing.T) {
+	template := "Hello <b>{{.name}}</b>!\n\nYour <i>special</i> order is ready."
+	data := `{
+		"charlie": {
+			"name": "Charlie"
+		}
+	}`
+
+	tmplReader := strings.NewReader(template)
+	dataReader := strings.NewReader(data)
+
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
+	messages, err := mp.Parse()
+	if err != nil {
+		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
+	}
+
+	wantMsg := "Hello <b>Charlie</b>!\n\nYour <i>special</i> order is ready."
+	gotMsg := messages["charlie"]
+
+	if gotMsg != wantMsg {
+		t.Errorf("MessageParser.Parse() for HTML with bold/italic:\ngot:\n%q\nwant:\n%q", gotMsg, wantMsg)
+	}
+}
+
+func TestMessageParser_HTMLWithLinks(t *testing.T) {
+	template := "Hello {{.name}}!\n\nClick <a href=\"https://example.com\">here</a> for details."
+	data := `{
+		"dave": {
+			"name": "Dave"
+		}
+	}`
+
+	tmplReader := strings.NewReader(template)
+	dataReader := strings.NewReader(data)
+
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
+	messages, err := mp.Parse()
+	if err != nil {
+		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
+	}
+
+	wantMsg := "Hello Dave!\n\nClick <a href=\"https://example.com\">here</a> for details."
+	gotMsg := messages["dave"]
+
+	if gotMsg != wantMsg {
+		t.Errorf("MessageParser.Parse() for HTML with links:\ngot:\n%q\nwant:\n%q", gotMsg, wantMsg)
+	}
+}
+
+func TestMessageParser_HTMLWithBRTag(t *testing.T) {
+	template := "Hello {{.name}}!<br><br>Your order is ready."
+	data := `{
+		"eve": {
+			"name": "Eve"
+		}
+	}`
+
+	tmplReader := strings.NewReader(template)
+	dataReader := strings.NewReader(data)
+
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
+	messages, err := mp.Parse()
+	if err != nil {
+		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
+	}
+
+	wantMsg := "Hello Eve!<br><br>Your order is ready."
+	gotMsg := messages["eve"]
+
+	if gotMsg != wantMsg {
+		t.Errorf("MessageParser.Parse() for HTML with <br>:\ngot:\n%q\nwant:\n%q", gotMsg, wantMsg)
+	}
+}
+
+func TestMessageParser_MixedCRLFAndLF(t *testing.T) {
+	template := "Line 1\nLine 2\r\nLine 3\nLine 4"
+	data := `{
+		"frank": {
+			"name": "Frank"
+		}
+	}`
+
+	tmplReader := strings.NewReader(template)
+	dataReader := strings.NewReader(data)
+
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
+	messages, err := mp.Parse()
+	if err != nil {
+		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
+	}
+
+	wantMsg := "Line 1<br>Line 2\r<br>Line 3<br>Line 4"
+	gotMsg := messages["frank"]
+
+	if gotMsg != wantMsg {
+		t.Errorf("MessageParser.Parse() for mixed CRLF and LF:\ngot:\n%q\nwant:\n%q", gotMsg, wantMsg)
 	}
 }

@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"regexp"
 	"text/template"
 
 	"github.com/pzsp-teams/cli/internal/initializers"
 )
+
+var htmlTagRegex = regexp.MustCompile(`<\/?(?:i|b|p)>|<br>|<a\s+href="[^"]*">|<\/a>`)
 
 // TemplateParser handles parsing different messages from supplied template and data
 type TemplateParser struct {
@@ -47,9 +50,19 @@ func (mp *TemplateParser) Parse() (map[string]string, error) {
 			initializers.Logger.Error("Failed to render message", "recipient", recipientName, "error", err)
 			return nil, fmt.Errorf("failed to render message for recipient %q: %w", recipientName, err)
 		}
-		messages[recipientName] = buf.String()
+		messages[recipientName] = processContent(buf.Bytes())
 	}
 
 	initializers.Logger.Info("Successfully rendered messages", "total_messages", len(messages))
 	return messages, nil
+}
+
+func processContent(data []byte) string {
+	if htmlTagRegex.Match(data) {
+		return string(data)
+	}
+
+	// \r can be ignored, won't be rendered by html on teams anyway
+	replaced := bytes.ReplaceAll(data, []byte("\n"), []byte("<br>"))
+	return string(replaced)
 }
