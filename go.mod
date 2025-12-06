@@ -2,7 +2,11 @@ module github.com/pzsp-teams/cli
 
 go 1.25
 
-require github.com/charmbracelet/log v0.4.2
+require (
+	github.com/BurntSushi/toml v1.5.0
+	github.com/charmbracelet/log v0.4.2
+	gopkg.in/yaml.v3 v3.0.1
+)
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
