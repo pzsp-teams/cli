@@ -1,4 +1,4 @@
-package messages
+package templates
 
 import (
 	"encoding/json"
@@ -11,8 +11,8 @@ import (
 type JSONParser struct{}
 
 // Parse reads JSON-formatted message data
-func (p *JSONParser) Parse(r io.Reader) (map[string]MessageData, error) {
-	var messages map[string]MessageData
+func (p *JSONParser) Parse(r io.Reader) (map[string]TemplateData, error) {
+	var messages map[string]TemplateData
 	decoder := json.NewDecoder(r)
 	if err := decoder.Decode(&messages); err != nil {
 		initializers.Logger.Error("Failed to decode JSON data", "error", err)

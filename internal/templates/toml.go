@@ -1,4 +1,4 @@
-package messages
+package templates
 
 import (
 	"io"
@@ -11,8 +11,8 @@ import (
 type TOMLParser struct{}
 
 // Parse reads TOML-formatted message data
-func (p *TOMLParser) Parse(r io.Reader) (map[string]MessageData, error) {
-	var messages map[string]MessageData
+func (p *TOMLParser) Parse(r io.Reader) (map[string]TemplateData, error) {
+	var messages map[string]TemplateData
 	if _, err := toml.NewDecoder(r).Decode(&messages); err != nil {
 		initializers.Logger.Error("Failed to decode TOML data", "error", err)
 		return nil, err
