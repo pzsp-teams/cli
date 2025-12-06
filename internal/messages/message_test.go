@@ -1,4 +1,4 @@
-package parser
+package messages
 
 import (
 	"strings"
