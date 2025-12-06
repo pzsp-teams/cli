@@ -21,7 +21,10 @@ func TestMessageParser_JSONFormatMultipleRecipients(t *testing.T) {
 	tmplReader := strings.NewReader(template)
 	dataReader := strings.NewReader(data)
 
-	mp := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
 	messages, err := mp.Parse()
 	if err != nil {
 		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
@@ -75,7 +78,10 @@ See you there!`
 	tmplReader := strings.NewReader(template)
 	dataReader := strings.NewReader(data)
 
-	mp := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
 	messages, err := mp.Parse()
 	if err != nil {
 		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
@@ -128,7 +134,10 @@ bob:
 	tmplReader := strings.NewReader(template)
 	dataReader := strings.NewReader(data)
 
-	mp := NewMessageParser(tmplReader, dataReader, &YAMLParser{})
+	mp, err := NewMessageParser(tmplReader, dataReader, &YAMLParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
 	messages, err := mp.Parse()
 	if err != nil {
 		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
@@ -168,7 +177,10 @@ name = "Bob"
 	tmplReader := strings.NewReader(template)
 	dataReader := strings.NewReader(data)
 
-	mp := NewMessageParser(tmplReader, dataReader, &TOMLParser{})
+	mp, err := NewMessageParser(tmplReader, dataReader, &TOMLParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
 	messages, err := mp.Parse()
 	if err != nil {
 		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
@@ -202,11 +214,10 @@ func TestMessageParser_InvalidTemplateSyntax(t *testing.T) {
 	tmplReader := strings.NewReader(template)
 	dataReader := strings.NewReader(data)
 
-	mp := NewMessageParser(tmplReader, dataReader, &JSONParser{})
-	_, err := mp.Parse()
+	_, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
 
 	if err == nil {
-		t.Error("MessageParser.Parse() expected error for invalid template syntax, got nil")
+		t.Error("NewMessageParser() expected error for invalid template syntax, got nil")
 	}
 }
 
@@ -217,11 +228,10 @@ func TestMessageParser_InvalidJSONData(t *testing.T) {
 	tmplReader := strings.NewReader(template)
 	dataReader := strings.NewReader(data)
 
-	mp := NewMessageParser(tmplReader, dataReader, &JSONParser{})
-	_, err := mp.Parse()
+	_, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
 
 	if err == nil {
-		t.Error("MessageParser.Parse() expected error for invalid JSON data, got nil")
+		t.Error("NewMessageParser() expected error for invalid JSON data, got nil")
 	}
 }
 
@@ -236,11 +246,10 @@ func TestMessageParser_InvalidYAMLData(t *testing.T) {
 	tmplReader := strings.NewReader(template)
 	dataReader := strings.NewReader(data)
 
-	mp := NewMessageParser(tmplReader, dataReader, &YAMLParser{})
-	_, err := mp.Parse()
+	_, err := NewMessageParser(tmplReader, dataReader, &YAMLParser{})
 
 	if err == nil {
-		t.Error("MessageParser.Parse() expected error for invalid YAML data, got nil")
+		t.Error("NewMessageParser() expected error for invalid YAML data, got nil")
 	}
 }
 
@@ -254,11 +263,10 @@ email = invalid toml without quotes
 	tmplReader := strings.NewReader(template)
 	dataReader := strings.NewReader(data)
 
-	mp := NewMessageParser(tmplReader, dataReader, &TOMLParser{})
-	_, err := mp.Parse()
+	_, err := NewMessageParser(tmplReader, dataReader, &TOMLParser{})
 
 	if err == nil {
-		t.Error("MessageParser.Parse() expected error for invalid TOML data, got nil")
+		t.Error("NewMessageParser() expected error for invalid TOML data, got nil")
 	}
 }
 
@@ -269,8 +277,11 @@ func TestMessageParser_MissingPlaceholderInData(t *testing.T) {
 	tmplReader := strings.NewReader(template)
 	dataReader := strings.NewReader(data)
 
-	mp := NewMessageParser(tmplReader, dataReader, &JSONParser{})
-	_, err := mp.Parse()
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
+	_, err = mp.Parse()
 
 	if err == nil {
 		t.Error("MessageParser.Parse() expected error for missing placeholder, got nil")
@@ -281,7 +292,10 @@ func TestMessageParser_EmptyData(t *testing.T) {
 	tmplReader := strings.NewReader("Hello {{.name}}!")
 	dataReader := strings.NewReader(`{}`)
 
-	mp := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	mp, err := NewMessageParser(tmplReader, dataReader, &JSONParser{})
+	if err != nil {
+		t.Fatalf("NewMessageParser() unexpected error: %v", err)
+	}
 	messages, err := mp.Parse()
 	if err != nil {
 		t.Errorf("MessageParser.Parse() unexpected error: %v", err)
