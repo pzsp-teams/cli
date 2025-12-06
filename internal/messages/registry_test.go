@@ -21,7 +21,7 @@ func TestRegistry_ParseJSONFile(t *testing.T) {
 		}
 	}`
 
-	err := os.WriteFile(filePath, []byte(content), 0644)
+	err := os.WriteFile(filePath, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("Failed to write test file: %v", err)
 	}
@@ -68,7 +68,7 @@ channel2:
   email: bob@example.com
 `
 
-	err := os.WriteFile(filePath, []byte(content), 0644)
+	err := os.WriteFile(filePath, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("Failed to write test file: %v", err)
 	}
@@ -113,7 +113,7 @@ channel2:
   name: Bob
 `
 
-	err := os.WriteFile(filePath, []byte(content), 0644)
+	err := os.WriteFile(filePath, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("Failed to write test file: %v", err)
 	}
@@ -157,7 +157,7 @@ name = "Bob"
 email = "bob@example.com"
 `
 
-	err := os.WriteFile(filePath, []byte(content), 0644)
+	err := os.WriteFile(filePath, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("Failed to write test file: %v", err)
 	}
@@ -196,7 +196,7 @@ func TestRegistry_UnsupportedFormat(t *testing.T) {
 	tmpDir := t.TempDir()
 	filePath := filepath.Join(tmpDir, "test.xml")
 
-	err := os.WriteFile(filePath, []byte("<data></data>"), 0644)
+	err := os.WriteFile(filePath, []byte("<data></data>"), 0o644)
 	if err != nil {
 		t.Fatalf("Failed to write test file: %v", err)
 	}

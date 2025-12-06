@@ -23,7 +23,6 @@ func TestMessageParser_JSONFormatMultipleRecipients(t *testing.T) {
 
 	mp := NewMessageParser(tmplReader, dataReader, &JSONParser{})
 	messages, err := mp.Parse()
-
 	if err != nil {
 		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
 	}
@@ -78,7 +77,6 @@ See you there!`
 
 	mp := NewMessageParser(tmplReader, dataReader, &JSONParser{})
 	messages, err := mp.Parse()
-
 	if err != nil {
 		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
 	}
@@ -132,7 +130,6 @@ bob:
 
 	mp := NewMessageParser(tmplReader, dataReader, &YAMLParser{})
 	messages, err := mp.Parse()
-
 	if err != nil {
 		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
 	}
@@ -173,7 +170,6 @@ name = "Bob"
 
 	mp := NewMessageParser(tmplReader, dataReader, &TOMLParser{})
 	messages, err := mp.Parse()
-
 	if err != nil {
 		t.Fatalf("MessageParser.Parse() unexpected error: %v", err)
 	}
@@ -213,6 +209,7 @@ func TestMessageParser_InvalidTemplateSyntax(t *testing.T) {
 		t.Error("MessageParser.Parse() expected error for invalid template syntax, got nil")
 	}
 }
+
 func TestMessageParser_InvalidJSONData(t *testing.T) {
 	template := "Hello {{.name}}!"
 	data := `{"alice": invalid json}`
@@ -286,7 +283,6 @@ func TestMessageParser_EmptyData(t *testing.T) {
 
 	mp := NewMessageParser(tmplReader, dataReader, &JSONParser{})
 	messages, err := mp.Parse()
-
 	if err != nil {
 		t.Errorf("MessageParser.Parse() unexpected error: %v", err)
 	}
