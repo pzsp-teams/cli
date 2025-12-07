@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"fmt"
 	"io"
 	"text/template"
 
@@ -14,14 +15,14 @@ import (
 func readTemplate(r io.Reader) (*template.Template, error) {
 	content, err := io.ReadAll(r)
 	if err != nil {
-		initializers.Logger.Error("Failed to read template content", "error", err)
-		return nil, err
+		initializers.Logger.Error(ErrTemplateReadFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", ErrTemplateReadFailed, err)
 	}
 
 	tmpl, err := template.New("message").Option("missingkey=error").Parse(string(content))
 	if err != nil {
-		initializers.Logger.Error("Failed to parse template syntax", "error", err)
-		return nil, err
+		initializers.Logger.Error(ErrTemplateParseFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", ErrTemplateParseFailed, err)
 	}
 
 	return tmpl, nil

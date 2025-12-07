@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/BurntSushi/toml"
@@ -14,8 +15,8 @@ type TOMLParser struct{}
 func (p *TOMLParser) Parse(r io.Reader) (map[string]TemplateData, error) {
 	var messages map[string]TemplateData
 	if _, err := toml.NewDecoder(r).Decode(&messages); err != nil {
-		initializers.Logger.Error("Failed to decode TOML data", "error", err)
-		return nil, err
+		initializers.Logger.Error(ErrTOMLDecodeFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", ErrTOMLDecodeFailed, err)
 	}
 	return messages, nil
 }
