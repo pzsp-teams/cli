@@ -4,17 +4,16 @@ import "errors"
 
 var (
 	// Template errors
-	ErrTemplateReadFailed   = errors.New("failed to read template content")
-	ErrTemplateParseFailed  = errors.New("failed to parse template syntax")
-	ErrTemplateRenderFailed = errors.New("failed to render template")
+	errTemplateReadFailed   = errors.New("failed to read template content")
+	errTemplateParseFailed  = errors.New("failed to parse template syntax")
+	errTemplateRenderFailed = errors.New("failed to render template")
 
 	// Data parsing errors
-	ErrDataParseFailed  = errors.New("failed to parse message data")
-	ErrJSONDecodeFailed = errors.New("failed to decode JSON data")
-	ErrYAMLDecodeFailed = errors.New("failed to decode YAML data")
-	ErrTOMLDecodeFailed = errors.New("failed to decode TOML data")
+	errDataParseFailed  = errors.New("failed to parse message data")
+	errJSONDecodeFailed = errors.New("failed to decode JSON data")
+	errYAMLDecodeFailed = errors.New("failed to decode YAML data")
+	errTOMLDecodeFailed = errors.New("failed to decode TOML data")
 
 	// Registry errors
-	ErrUnsupportedFormat  = errors.New("unsupported file format")
-	ErrNoParserRegistered = errors.New("no parser registered for extension")
+	errNoParserRegistered = errors.New("no parser registered for extension")
 )

@@ -40,8 +40,8 @@ func (r *Registry) GetParser(filename string) (Parser, error) {
 
 	parser, ok := r.parsers[ext]
 	if !ok {
-		initializers.Logger.Warn(ErrNoParserRegistered.Error(), "extension", ext, "supported_formats", r.SupportedFormats())
-		return nil, fmt.Errorf("%w: .%s", ErrNoParserRegistered, ext)
+		initializers.Logger.Warn(errNoParserRegistered.Error(), "extension", ext, "supported_formats", r.SupportedFormats())
+		return nil, fmt.Errorf("%w: .%s", errNoParserRegistered, ext)
 	}
 
 	return parser, nil
