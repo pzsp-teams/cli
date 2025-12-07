@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/pzsp-teams/cli/internal/initializers"
@@ -15,8 +16,8 @@ func (p *YAMLParser) Parse(r io.Reader) (map[string]TemplateData, error) {
 	var messages map[string]TemplateData
 	decoder := yaml.NewDecoder(r)
 	if err := decoder.Decode(&messages); err != nil {
-		initializers.Logger.Error("Failed to decode YAML data", "error", err)
-		return nil, err
+		initializers.Logger.Error(ErrYAMLDecodeFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", ErrYAMLDecodeFailed, err)
 	}
 	return messages, nil
 }

@@ -23,14 +23,14 @@ type TemplateParser struct {
 func NewMessageParser(templateReader, dataReader io.Reader, dataParser Parser) (*TemplateParser, error) {
 	tmpl, err := readTemplate(templateReader)
 	if err != nil {
-		initializers.Logger.Error("Failed to read and parse template", "error", err)
-		return nil, fmt.Errorf("failed to read and parse template: %w", err)
+		// readTemplate already logs and wraps the error
+		return nil, err
 	}
 
 	recipients, err := dataParser.Parse(dataReader)
 	if err != nil {
-		initializers.Logger.Error("Failed to parse message data", "error", err)
-		return nil, fmt.Errorf("failed to parse message data: %w", err)
+		initializers.Logger.Error(ErrDataParseFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", ErrDataParseFailed, err)
 	}
 	initializers.Logger.Info("Message data parsed", "recipient_count", len(recipients))
 
@@ -47,8 +47,8 @@ func (mp *TemplateParser) Parse() (map[string]string, error) {
 	for recipientName, data := range mp.recipients {
 		var buf bytes.Buffer
 		if err := mp.template.Execute(&buf, data); err != nil {
-			initializers.Logger.Error("Failed to render message", "recipient", recipientName, "error", err)
-			return nil, fmt.Errorf("failed to render message for recipient %q: %w", recipientName, err)
+			initializers.Logger.Error(ErrTemplateRenderFailed.Error(), "recipient", recipientName, "error", err)
+			return nil, fmt.Errorf("%w for recipient %q: %w", ErrTemplateRenderFailed, recipientName, err)
 		}
 		messages[recipientName] = processContent(buf.Bytes())
 	}
