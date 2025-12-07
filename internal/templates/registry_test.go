@@ -6,6 +6,12 @@ import (
 	"testing"
 )
 
+func closeFile(t *testing.T, file *os.File) {
+	if err := file.Close(); err != nil {
+		t.Logf("failed to close file: %v", err)
+	}
+}
+
 func TestRegistry_ParseJSONFile(t *testing.T) {
 	tmpDir := t.TempDir()
 	filePath := filepath.Join(tmpDir, "test.json")
@@ -36,7 +42,7 @@ func TestRegistry_ParseJSONFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to open test file: %v", err)
 	}
-	defer file.Close()
+	defer closeFile(t, file)
 
 	messages, err := parser.Parse(file)
 	if err != nil {
@@ -83,7 +89,7 @@ channel2:
 	if err != nil {
 		t.Fatalf("Failed to open test file: %v", err)
 	}
-	defer file.Close()
+	defer closeFile(t, file)
 
 	messages, err := parser.Parse(file)
 	if err != nil {
@@ -128,7 +134,7 @@ channel2:
 	if err != nil {
 		t.Fatalf("Failed to open test file: %v", err)
 	}
-	defer file.Close()
+	defer closeFile(t, file)
 
 	messages, err := parser.Parse(file)
 	if err != nil {
@@ -172,7 +178,7 @@ email = "bob@example.com"
 	if err != nil {
 		t.Fatalf("Failed to open test file: %v", err)
 	}
-	defer file.Close()
+	defer closeFile(t, file)
 
 	messages, err := parser.Parse(file)
 	if err != nil {
