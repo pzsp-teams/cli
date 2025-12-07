@@ -29,8 +29,8 @@ func NewMessageParser(templateReader, dataReader io.Reader, dataParser Parser) (
 
 	recipients, err := dataParser.Parse(dataReader)
 	if err != nil {
-		initializers.Logger.Error(ErrDataParseFailed.Error(), "error", err)
-		return nil, fmt.Errorf("%w: %w", ErrDataParseFailed, err)
+		initializers.Logger.Error(errDataParseFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", errDataParseFailed, err)
 	}
 	initializers.Logger.Info("Message data parsed", "recipient_count", len(recipients))
 
@@ -47,8 +47,8 @@ func (mp *TemplateParser) Parse() (map[string]string, error) {
 	for recipientName, data := range mp.recipients {
 		var buf bytes.Buffer
 		if err := mp.template.Execute(&buf, data); err != nil {
-			initializers.Logger.Error(ErrTemplateRenderFailed.Error(), "recipient", recipientName, "error", err)
-			return nil, fmt.Errorf("%w for recipient %q: %w", ErrTemplateRenderFailed, recipientName, err)
+			initializers.Logger.Error(errTemplateRenderFailed.Error(), "recipient", recipientName, "error", err)
+			return nil, fmt.Errorf("%w for recipient %q: %w", errTemplateRenderFailed, recipientName, err)
 		}
 		messages[recipientName] = processContent(buf.Bytes())
 	}

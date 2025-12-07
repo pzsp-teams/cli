@@ -15,8 +15,8 @@ type TOMLParser struct{}
 func (p *TOMLParser) Parse(r io.Reader) (map[string]TemplateData, error) {
 	var messages map[string]TemplateData
 	if _, err := toml.NewDecoder(r).Decode(&messages); err != nil {
-		initializers.Logger.Error(ErrTOMLDecodeFailed.Error(), "error", err)
-		return nil, fmt.Errorf("%w: %w", ErrTOMLDecodeFailed, err)
+		initializers.Logger.Error(errTOMLDecodeFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", errTOMLDecodeFailed, err)
 	}
 	return messages, nil
 }

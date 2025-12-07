@@ -16,8 +16,8 @@ func (p *YAMLParser) Parse(r io.Reader) (map[string]TemplateData, error) {
 	var messages map[string]TemplateData
 	decoder := yaml.NewDecoder(r)
 	if err := decoder.Decode(&messages); err != nil {
-		initializers.Logger.Error(ErrYAMLDecodeFailed.Error(), "error", err)
-		return nil, fmt.Errorf("%w: %w", ErrYAMLDecodeFailed, err)
+		initializers.Logger.Error(errYAMLDecodeFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", errYAMLDecodeFailed, err)
 	}
 	return messages, nil
 }

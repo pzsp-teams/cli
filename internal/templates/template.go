@@ -15,14 +15,14 @@ import (
 func readTemplate(r io.Reader) (*template.Template, error) {
 	content, err := io.ReadAll(r)
 	if err != nil {
-		initializers.Logger.Error(ErrTemplateReadFailed.Error(), "error", err)
-		return nil, fmt.Errorf("%w: %w", ErrTemplateReadFailed, err)
+		initializers.Logger.Error(errTemplateReadFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", errTemplateReadFailed, err)
 	}
 
 	tmpl, err := template.New("message").Option("missingkey=error").Parse(string(content))
 	if err != nil {
-		initializers.Logger.Error(ErrTemplateParseFailed.Error(), "error", err)
-		return nil, fmt.Errorf("%w: %w", ErrTemplateParseFailed, err)
+		initializers.Logger.Error(errTemplateParseFailed.Error(), "error", err)
+		return nil, fmt.Errorf("%w: %w", errTemplateParseFailed, err)
 	}
 
 	return tmpl, nil
